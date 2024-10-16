@@ -1,5 +1,12 @@
 import fitz  # PyMuPDF
 from hashlib import md5
+import sys
+import os
+
+'''
+To run: python remove-duplicates.py "input.pdf" "output_document_no_duplicates.pdf"
+
+'''
 
 def page_to_hash(page):
     """
@@ -13,6 +20,11 @@ def remove_duplicate_pages(input_pdf, output_pdf):
     """
     Remove duplicate pages from a PDF and save the result to a new file.
     """
+    # Check if input file exists
+    if not os.path.exists(input_pdf):
+        print(f"Error: '{input_pdf}' does not exist.")
+        sys.exit(1)
+
     doc = fitz.open(input_pdf)
     seen_hashes = set()  # Store unique page hashes
     pages_to_keep = []   # Track the indices of non-duplicate pages
@@ -36,7 +48,13 @@ def remove_duplicate_pages(input_pdf, output_pdf):
     doc.close()
     print(f"Duplicates removed. Saved to: {output_pdf}")
 
-# Usage example
-input_file = "Midterm 1 notes (2).pdf"
-output_file = "output_document_no_duplicates.pdf"
-remove_duplicate_pages(input_file, output_file)
+if __name__ == "__main__":
+    # Ensure correct usage
+    if len(sys.argv) != 3:
+        print("Usage: python remove_duplicates.py <input_pdf> <output_pdf>")
+        sys.exit(1)
+
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
+
+    remove_duplicate_pages(input_file, output_file)
